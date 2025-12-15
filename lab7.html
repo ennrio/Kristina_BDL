@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кофейная гавань - Уютная кофейня с авторским кофе</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #5D4037;
+            background-color: #FFF8F0;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Шапка и меню */
+        header {
+            background-color: #6F4E37;
+            color: white;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            color: #D7B98E;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #D7B98E;
+        }
+        
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Основные разделы */
+        section {
+            padding: 100px 0;
+        }
+        
+        h1, h2, h3 {
+            color: #5D4037;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: #D7B98E;
+            border-radius: 2px;
+        }
+        
+        /* Герой-секция */
+        .hero {
+            background: linear-gradient(rgba(111, 78, 55, 0.85), rgba(111, 78, 55, 0.9)), url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 180px 0 120px;
+            margin-top: 70px;
+        }
+        
+        .hero h1 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #D7B98E;
+            color: #5D4037;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #C9A977;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* О нас */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .about-text {
+            flex: 1;
+        }
+        
+        .about-image {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Меню */
+        .menu-item {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-10px);
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .menu-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .menu-item-content {
+            padding: 20px;
+        }
+        
+        .menu-item h3 {
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .price {
+            color: #D7B98E;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+        
+        /* Галерея */
+        .gallery {
+            background-color: #F9F5F0;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            height: 250px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Форма обратной связи */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #D7B98E;
+            outline: none;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* Футер */
+        footer {
+            background-color: #6F4E37;
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            color: #D7B98E;
+            margin-bottom: 20px;
+        }
+        
+        .contact-info a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            transition: color 0.3s;
+        }
+        
+        .contact-info a:hover {
+            color: #D7B98E;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: #D7B98E;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Адаптивная графика - SVG иконка кофейной чашки */
+        .coffee-icon {
+            width: 60px;
+            height: 60px;
+            margin: 20px auto;
+            display: block;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            nav ul {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                flex-direction: column;
+                background-color: #6F4E37;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+                padding: 20px 0;
+            }
+            
+            nav ul.active {
+                left: 0;
+            }
+            
+            nav ul li {
+                margin: 15px 0;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero {
+                padding: 150px 0 80px;
+            }
+            
+            section {
+                padding: 70px 0;
+            }
+            
+            .contact-form {
+                padding: 25px;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка с меню -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-coffee logo-icon"></i>
+                <span>Кофейная гавань</span>
+            </div>
+            
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <nav>
+                <ul id="nav-menu">
+                    <li><a href="#home">Главная</a></li>
+                    <li><a href="#about">О нас</a></li>
+                    <li><a href="#menu">Меню</a></li>
+                    <li><a href="#gallery">Галерея</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Главная секция -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Кофейная гавань - место, где рождается вкус</h1>
+            <p>Уютная атмосфера, аромат свежеобжаренного кофе и авторские десерты ждут вас в нашем заведении. Мы создали это пространство для тех, кто ценит качественный кофе, теплую атмосферу и моменты наслаждения в кругу друзей или наедине с собой. Наши бариста проходят специальное обучение и знают все секреты приготовления идеального кофе.</p>
+            <a href="#menu" class="btn">Посмотреть меню</a>
+            
+            <!-- Адаптивная SVG-иконка -->
+            <svg class="coffee-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6h-2V4h2v2zm0 4h-2V8h2v2zm0 4h-2v-2h2v2zm-8-8H8V4h2v2zm0 4H8V8h2v2zm0 4H8v-2h2v2zM6 6H4V4h2v2zm0 4H4V8h2v2zm0 4H4v-2h2v2zm12 4H2v2h16v-2zM20 2H2v14h18V2zm-2 12H4V4h14v10z" fill="#D7B98E"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- О нас -->
+    <section id="about">
+        <div class="container">
+            <h2>О нашей кофейне</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>История кофейни "Кофейная гавань" началась в 2015 году, когда два друга - профессиональный бариста Алексей и кондитер Мария - решили создать место, где каждый смог бы ощутить настоящий вкус качественного кофе и насладиться домашней атмосферой.</p>
+                    <p>Начав с небольшого заведения на 20 мест, сегодня мы выросли в уютную двухэтажную кофейню в центре города. Наша философия проста: только лучшие зерна арабики из Эфиопии, Колумбии и Бразилии, ручная обжарка небольшими партиями и индивидуальный подход к каждому клиенту.</p>
+                    <p>Мы гордимся тем, что все наши десерты готовятся ежедневно на собственной кухне без использования консервантов и искусственных добавок. Каждый месяц мы обновляем меню, добавляя сезонные позиции и экспериментируя с новыми вкусами.</p>
+                </div>
+                <div class="about-image">
+                    <img src="interiermax.jpg" alt="Интерьер кофейни" alt style="
+					width: 604.15px;
+					">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Меню -->
+    <section id="menu">
+        <div class="container">
+            <h2>Наше меню</h2>
+            <div class="menu-grid">
+                <!-- Эспрессо -->
+                <div class="menu-item">
+                    <img src="espresso.jpg" alt="Эспрессо" alt style="
+					width: 404.15px;
+					">
+                    <div class="menu-item-content">
+                        <h3>Эспрессо классический</h3>
+                        <p>Концентрированный кофе, приготовленный под давлением горячей воды. Идеальная основа для любого кофейного напитка или самостоятельный крепкий напиток для ценителей.</p>
+                        <div class="price">180 руб.</div>
+                    </div>
+                </div>
+                
+                <!-- Капучино -->
+                <div class="menu-item">
+                    <img src="capuchinonamend.jpg" alt="Капучино" alt style="
+					width: 404.15px;
+					">
+                    <div class="menu-item-content">
+                        <h3>Капучино с миндальным молоком</h3>
+                        <p>Идеальное сочетание эспрессо, молока и воздушной молочной пенки. Подается с рисунком на пенке. Доступен с коровьим, миндальным, овсяным или кокосовым молоком.</p>
+                        <div class="price">250 руб.</div>
+                    </div>
+                </div>
+                
+                <!-- Авторский десерт-->
+                <div class="menu-item">
+                    <div style="background-color: #f5f5f5; height: 200px; display: flex; align-items: center; justify-content: center; color: #6F4E37; font-weight: bold; font-size: 1.2rem;">
+						<img src="des.jpg" alt="Яблочный пирог" alt style="
+							width: 404.15px;
+							">
+                        <br>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3>Яблочный штрудель</h3>
+                        <p>Авторский десерт от нашего шеф-кондитера. Хрустящая слоеная оболочка, тающая во рту, скрывает сочную начинку из отборных яблок сорта «Голден» и «Гренни Смит» с тонкой кислинкой. Каждый кусочек — это калейдоскоп вкусов: сладость коричневого сахара, теплота корицы, пикантность мускатного ореха и легкая терпкость изюма, вымоченного в роме.</p>
+                        <div class="price">320 руб.</div>
+                    </div>
+                </div>
+                
+                <!-- Латте -->
+                <div class="menu-item">
+                    <img src="latte.jpg" alt="Латте" alt style="
+						width: 404.15px;
+						">
+                    <div class="menu-item-content">
+                        <h3>Латте с сиропом</h3>
+                        <p>Мягкий кофейный напиток на основе эспрессо с большим количеством молока и небольшим слоем пены. Доступен с сиропами: ванильный, кленовый, кокосовый, карамельный.</p>
+                        <div class="price">270 руб.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Галерея -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2>Наша атмосфера</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="interier.jpg" alt="Интерьер кофейни" alt style="
+					width: 404.15px;
+					">
+                </div>
+                <div class="gallery-item">
+                    <img src="process.jpg" alt="Процесс приготовления кофе" alt style="
+					width: 404.15px;
+					">
+                </div>
+                <div class="gallery-item">
+                    <img src="des.jpg" alt="Десерты" alt style="
+					width: 404.15px;
+					">
+                </div>
+                <div class="gallery-item">
+                    <img src="cofe.jpg" alt="Кофейные зерна" alt style="
+					width: 404.15px;
+					">
+                </div>
+                <div class="gallery-item">
+                    <img src="clienti.jpg" alt="Клиенты в кофейне" alt style="
+					width: 404.15px;
+					">
+                </div>
+            </div>
+        </div>
+		
+    </section>
+
+    <!-- Форма обратной связи -->
+    <section id="contact">
+        <div class="container">
+            <h2>Свяжитесь с нами</h2>
+            <div class="contact-form">
+                <form id="feedback-form">
+                    <div class="form-group">
+                        <label for="name">Имя *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                        <div class="error" id="email-error">Пожалуйста, введите корректный email</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Сообщение</label>
+                        <textarea id="message" name="message" placeholder="Ваш вопрос или отзыв..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Отправить сообщение</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Кофейная гавань</h3>
+                    <p>Уютная кофейня с авторским кофе и домашней атмосферой. Лучшее место для встреч, работы и отдыха.</p>
+                </div>
+                
+                <div class="footer-section contact-info">
+                    <h3>Контакты</h3>
+                    <a href="tel:+79991234567"><i class="fas fa-phone"></i> +7 (999) 123-45-67</a>
+                    <a href="mailto:coffee-haven@example.com"><i class="fas fa-envelope"></i> coffee-haven@example.com</a>
+                    <p><i class="fas fa-map-marker-alt"></i> г. Москва, ул. Кофейная, д. 15</p>
+                    <p><i class="fas fa-clock"></i> Пн-Вс: 8:00 - 23:00</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Мы в соцсетях</h3>
+                    <p>Подписывайтесь на наши соцсети, чтобы быть в курсе новинок и акций.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; Кофейная гавань, 2025. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Мобильное меню
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+        
+        mobileMenu.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            mobileMenu.querySelector('i').classList.toggle('fa-bars');
+            mobileMenu.querySelector('i').classList.toggle('fa-times');
+        });
+        
+        // Закрытие меню при клике на ссылку
+        document.querySelectorAll('#nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                mobileMenu.querySelector('i').classList.add('fa-bars');
+                mobileMenu.querySelector('i').classList.remove('fa-times');
+            });
+        });
+        
+        // Валидация формы
+        const feedbackForm = document.getElementById('feedback-form');
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('email-error');
+        
+        feedbackForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Проверка email
+            const email = emailInput.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(email)) {
+                emailError.style.display = 'block';
+                emailInput.style.borderColor = '#e74c3c';
+            } else {
+                emailError.style.display = 'none';
+                emailInput.style.borderColor = '#ddd';
+                
+                // В реальном приложении здесь был бы AJAX запрос
+                alert('Спасибо! Ваше сообщение отправлено.');
+                feedbackForm.reset();
+            }
+        });
+        
+        // Скрытие ошибки при исправлении email
+        emailInput.addEventListener('input', function() {
+            const email = emailInput.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (emailRegex.test(email)) {
+                emailError.style.display = 'none';
+                emailInput.style.borderColor = '#ddd';
+            }
+        });
+    </script>
+</body>
+</html>
