@@ -1,152 +1,111 @@
 # Теоретическая часть — ЛР 2
 **Студент:** Пресняков Егор Степанович  
 **Student ID:** 2  
-**Вариант:** датасет airfoil_self_noise
+**Вариант:** airfoil_self_noise
 
 ---
 
 ## Вопрос 1. Градиент функционала качества
 
-Рассмотрим линейную модель и функционал качества MSE:
+Функционал MSE:
 
 $$
-Q(\theta, X^{\ell}) = \frac{1}{\ell} \sum_{i=1}^{\ell} \left( \sum_{j=1}^{d} \theta_j x_{i,j} + \theta_0 - y_i \right)^2
+Q = \frac{1}{\ell} \sum_{i=1}^{\ell} \left( \sum_{j=1}^{d} \theta_j x_{i,j} + \theta_0 - y_i \right)^2
 $$
 
-где $\theta = (\theta_1, \dots, \theta_d)$ — вектор параметров, $\theta_0$ — смещение (bias).
+### 1.1 Частная производная по theta_j
 
----
-
-### 1. Вывод $\dfrac{\partial Q}{\partial \theta_j}$ и матричная форма
-
-#### Пошаговый вывод
-
-1. **Линейность производной**  
-   $$
-   \frac{\partial Q}{\partial \theta_j} = \frac{1}{\ell} \sum_{i=1}^{\ell} \frac{\partial}{\partial \theta_j} \left( \sum_{k=1}^{d} \theta_k x_{i,k} + \theta_0 - y_i \right)^2
-   $$
-
-2. **Цепное правило**  
-   $$
-   = \frac{1}{\ell} \sum_{i=1}^{\ell} 2 \left( \sum_{k=1}^{d} \theta_k x_{i,k} + \theta_0 - y_i \right) \cdot \frac{\partial}{\partial \theta_j} \left( \sum_{k=1}^{d} \theta_k x_{i,k} \right)
-   $$
-
-3. **Производная линейной формы**  
-   $\frac{\partial}{\partial \theta_j} \sum_{k=1}^{d} \theta_k x_{i,k} = x_{i,j}$, а $\theta_0$ и $y_i$ не зависят от $\theta_j$.
-
-4. **Итоговая скалярная формула**  
-   $$
-   \frac{\partial Q}{\partial \theta_j} = \frac{2}{\ell} \sum_{i=1}^{\ell} \left( \sum_{k=1}^{d} \theta_k x_{i,k} + \theta_0 - y_i \right) x_{i,j}
-   $$
-
-#### Матричная форма
-
-- $X \in \mathbb{R}^{\ell \times d}$ — матрица признаков  
-- $\mathbf{y} \in \mathbb{R}^{\ell}$ — вектор ответов  
-- $\mathbf{1}$ — вектор из единиц  
-- $\hat{\mathbf{y}} = X\theta + \theta_0\mathbf{1}$  
-- $\mathbf{r} = \hat{\mathbf{y}} - \mathbf{y}$
+Берём производную:
 
 $$
-\nabla_{\theta} Q = \frac{2}{\ell} X^\top \mathbf{r} = \frac{2}{\ell} X^\top \left( X\theta + \theta_0 \mathbf{1} - \mathbf{y} \right)
+\frac{\partial Q}{\partial \theta_j} = \frac{2}{\ell} \sum_{i=1}^{\ell} \left( \sum_{k=1}^{d} \theta_k x_{i,k} + \theta_0 - y_i \right) x_{i,j}
 $$
 
----
+### 1.2 Матричная форма
 
-### 2. Эквивалентность записей и градиент по $\theta_0$
-
-Если добавить константный признак $x_{i,0}=1$ и расширить вектор параметров до $\tilde{\theta} = (\theta_0, \theta_1, \dots, \theta_d)^\top$, то скалярное произведение $\langle \tilde{\theta}, \tilde{\mathbf{x}}_i \rangle$ в точности равно $\theta_0 + \sum_{j=1}^d \theta_j x_{i,j}$.
-
-Градиент по $\theta_0$ получается как частный случай общей формулы при $j=0$ и $x_{i,0}=1$:
+Введём матрицу X (l x d), вектор y, вектор 1 из единиц. Тогда:
 
 $$
-\frac{\partial Q}{\partial \theta_0} = \frac{2}{\ell} \sum_{i=1}^{\ell} \left( \sum_{j=1}^{d} \theta_j x_{i,j} + \theta_0 - y_i \right) \cdot 1
+\nabla_{\theta} Q = \frac{2}{\ell} X^\top (X\theta + \theta_0 1 - y)
 $$
 
----
+### 1.3 Градиент по theta_0
 
-### 3. SGD vs Полный градиентный спуск
+Это частный случай при j=0, если добавить столбец единиц:
+
+$$
+\frac{\partial Q}{\partial \theta_0} = \frac{2}{\ell} \sum_{i=1}^{\ell} \left( \sum_{j=1}^{d} \theta_j x_{i,j} + \theta_0 - y_i \right)
+$$
+
+### 1.4 Сравнение SGD и GD
 
 | Аспект | Полный GD | SGD |
 |--------|-----------|-----|
-| Точность градиента | точный | несмещённый, высокая дисперсия |
-| Сложность шага | $O(\ell d)$ | $O(d)$ |
-| Траектория | гладкая | шумная |
-| Сходимость | медленно на больших данных | быстро |
+| Сложность шага | O(ℓ d) | O(d) |
+| Точность градиента | точный | шумный, несмещённый |
+| Траектория | гладкая | зигзагообразная |
 
-> **Итог**: на практике предпочитают SGD (или Adam) из-за скорости и масштабируемости.
+**Вывод:** SGD быстрее на больших данных, шум помогает регуляризации.
 
 ---
 
 ## Вопрос 2. Регуляризация L1 и L2
 
-Рассмотрим регуляризованный функционал ($\tau > 0$):
+Регуляризованный функционал: Q_reg = Q + tau * R(theta), tau > 0.
+
+### 2.1 L2 (Ridge)
+
+- R = sum_{j=1}^d theta_j^2
+- Добавка в градиент: 2 tau theta_j
+- Обновление SGD: theta_j <- theta_j - eta ( dQ/dtheta_j + 2 tau theta_j )
+
+### 2.2 L1 (LASSO)
+
+- R = sum_{j=1}^d |theta_j|
+- Добавка (при theta_j != 0): tau * sign(theta_j)
+- Обновление: theta_j <- theta_j - eta ( dQ/dtheta_j + tau * sign(theta_j) )
+
+### 2.3 Геометрия
+
+- L2: допустимая область — шар → все координаты ненулевые.
+- L1: область — ромб (многогранник) → касание часто в вершине → разреженность.
+
+### 2.4 Пределы
+
+| Параметр | Ridge | LASSO |
+|----------|-------|-------|
+| tau -> 0 | обычный МНК | обычный МНК |
+| tau -> inf | все theta_j -> 0 асимптотически | все theta_j -> 0 точно, с обнулением признаков |
+
+### 2.5 Проблема sign(0) и её решение
+
+Функция |x| не дифференцируема в 0. Используют **soft‑thresholding**:
 
 $$
-Q_\tau(\theta, X^{\ell}) = Q(\theta, X^{\ell}) + \tau \cdot R(\theta)
+\theta_j \leftarrow S_{\eta\tau}\left( \theta_j - \eta \frac{\partial Q}{\partial \theta_j} \right), \quad S_\lambda(z) = \text{sign}(z) \cdot \max(|z| - \lambda, 0)
 $$
 
-(смещение $\theta_0$ обычно не регуляризуют)
+Другие способы: субградиент с sign(0)=0, координатный спуск, сглаживание.
 
 ---
 
-### 1. Формулы регуляризаторов и добавка в градиент
+## Вопрос 3. Стандартизация на датасете airfoil
 
-#### Ridge (L2)
+### 3.1 Почему она нужна
 
-- $R_{\text{L2}}(\theta) = \|\theta\|_2^2 = \sum_{j=1}^d \theta_j^2$
-- Добавка в градиент: $\frac{\partial}{\partial \theta_j} \left( \tau \sum_{k=1}^d \theta_k^2 \right) = 2\tau \theta_j$
-- Обновление SGD: $\theta_j \leftarrow \theta_j - \eta \left( \frac{\partial Q}{\partial \theta_j} + 2\tau \theta_j \right)$
+Признаки имеют разные масштабы:
+- frequency (сотни Гц)
+- velocity (десятки м/с)
+- thickness (сотые доли метра)
 
-#### LASSO (L1)
+Без стандартизации матрица X^T X плохо обусловлена, изолинии эллиптические, SGD "метается".
 
-- $R_{\text{L1}}(\theta) = \|\theta\|_1 = \sum_{j=1}^d |\theta_j|$
-- Добавка в градиент (при $\theta_j \neq 0$): $\tau \cdot \text{sign}(\theta_j)$
-- Обновление SGD: $\theta_j \leftarrow \theta_j - \eta \left( \frac{\partial Q}{\partial \theta_j} + \tau \cdot \text{sign}(\theta_j) \right)$
+После стандартизации Var(x_j) ≈ 1, изолинии становятся окружностями → сходимость в десятки раз быстрее.
 
----
+### 3.2 Эксперимент
 
-### 2. Геометрическая интерпретация
+- **Без стандартизации:** eta=0.01 → overflow, веса в inf.  
+  eta=1e-4 → loss колеблется, MAPE > 0.15.
+- **Со стандартизацией:** eta=0.01, batch=32 → гладкая сходимость, MAPE ≈ 0.029 (против 0.0298 у sklearn).
 
-Эквивалентная задача: $\min_{\theta} Q(\theta)$ при $R(\theta) \le t$.
-
-- **L2**: область — шар → касание в точке с ненулевыми координатами.
-- **L1**: область — ромб (многогранник) → касание часто происходит в углу → нулевые координаты (разреженность).
-
----
-
-### 3. Поведение при $\tau \to 0$ и $\tau \to +\infty$
-
-| Предел | Ridge | LASSO |
-|--------|-------|-------|
-| $\tau \to 0$ | $\theta \to \theta_{\text{OLS}}$ | $\theta \to \theta_{\text{OLS}}$ |
-| $\tau \to +\infty$ | $\theta \to 0$ асимптотически | $\theta \to 0$ точно, с обнулением признаков |
-
----
-
-### 4. Проблема sign(0) и её решение
-
-Функция $|x|$ не дифференцируема в нуле. На практике используют:
-
-1. **Soft‑thresholding** (проксимальный оператор):  
-   $$
-   \theta_j \leftarrow \mathcal{S}_{\eta\tau}\left( \theta_j - \eta \frac{\partial Q}{\partial \theta_j} \right), \quad \mathcal{S}_\lambda(z) = \text{sign}(z) \cdot \max(|z| - \lambda, 0)
-   $$
-2. Субградиентный метод с $\text{sign}(0)=0$ (медленнее).  
-3. Координатный спуск.  
-4. Сглаживание $|x| \approx \sqrt{x^2+\varepsilon}$.
-
----
-
-## Вопрос 3. Анализ результатов на своём датасете
-
-### 1. Влияние стандартизации
-
-Признаки `frequency` (сотни Гц), `velocity` (десятки м/с), `thickness` (сотые доли метра) имеют разные масштабы. Без стандартизации матрица $X^\top X$ плохо обусловлена ($\kappa \gg 1$). Изолинии вытянуты, SGD "метается". После стандартизации $\text{Var}(x_j) \approx 1$, $\kappa \approx 1$, изолинии становятся окружностями — сходимость ускоряется в десятки раз.
-
-### 2. Экспериментальное подтверждение
-
-- **Без стандартизации**: при $\eta=0.01$ — overflow, веса в `inf`. При $\eta=10^{-4}$ loss колеблется, MAPE > 0.15.
-- **Со стандартизацией**: $\eta=0.01$, batch=32 — монотонное падение MSE, MAPE ≈ 0.029 (compare с sklearn 0.0298).
-
-**Вывод:** стандартизация необходима для градиентных методов на разномасштабных данных.
+**Вывод:** стандартизация необходима для градиентных методов.
